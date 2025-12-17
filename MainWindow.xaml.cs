@@ -92,4 +92,9 @@ public partial class MainWindow : Window
     {
 
     }
+
+    private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+    {
+
+    }
 }

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:MusicLibrary"
         xmlns:model="clr-namespace:MusicLibrary.Models"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        MinWidth="800" MinHeight="450">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -23,7 +24,7 @@
                 <!-- ändra namn -->
                 <RowDefinition Height="*"/>
                 <!-- TreeView -->
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
                 <!-- lägg till-knapp -->
             </Grid.RowDefinitions>
 
@@ -62,13 +63,13 @@
                     Orientation="Horizontal"
             Margin="5">
 
-            
+
             </StackPanel>
 
 
 
 
-            <TreeView x:Name="myTreeView" Grid.Row="4" Grid.Column="0" SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView x:Name="myTreeView" Grid.Row="3" Grid.Column="0" SelectedItemChanged="TreeView_SelectedItemChanged">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type model:Artist}" ItemsSource="{Binding Albums}">
                         <TextBlock>
@@ -87,9 +88,10 @@
             </TreeView>
 
             <Button 
-            Grid.Row="3"
+            Grid.Row="4"
               Content="Add Track To Playlist"
               Margin="5"
+                Height="20"
               Command="{Binding AddTrackToPlaylistCommand}" />
 
         </Grid>
@@ -101,14 +103,17 @@
 
                 <!-- DataGrid -->
             </Grid.RowDefinitions>
-            <Label Content="{Binding SelectedPlaylist, Mode=TwoWay}"></Label>
-            <Button Content="Save Playlist Name"
-                Margin="2.5,0,0,0"
-                HorizontalAlignment="Right"
-                Command="{Binding UpdatePlaylistCommand}" Width="95" 
-            />
-            <!--Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" />-->
 
+            <TextBox
+                     Height="30"
+             Margin="0,0,103,0"
+                FontSize="15"
+             Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged_1" />
+
+            <Button Content="Save Playlist Name"
+                    
+                    HorizontalAlignment="Right"
+            Command="{Binding UpdatePlaylistCommand}" Height="30" VerticalAlignment="Top" />
 
             <DataGrid x:Name="myDataGrid" 
                   Grid.Row="1"

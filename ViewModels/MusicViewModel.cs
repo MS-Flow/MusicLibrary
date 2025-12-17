@@ -205,7 +205,6 @@ public class MusicViewModel : INotifyPropertyChanged
         );
 
         SelectedPlaylist.Name = EditPlaylistName;
-        OnPropertyChanged(nameof(Playlists));
     }
 
     public async Task LoadMoreTracksAsync()
