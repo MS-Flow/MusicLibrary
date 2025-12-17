@@ -26,6 +26,10 @@ public partial class Track
 
     public int Milliseconds { get; set; }
 
+    [NotMapped]
+    public TimeSpan Duration => TimeSpan.FromMilliseconds(Milliseconds);
+
+
     public int? Bytes { get; set; }
 
     public double UnitPrice { get; set; }

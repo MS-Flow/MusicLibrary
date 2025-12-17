@@ -168,8 +168,8 @@
                     <DataGridTextColumn Header="Album"
                             Binding="{Binding Album.Title}" />
 
-                    <DataGridTextColumn Header="Length (ms)"
-                            Binding="{Binding Milliseconds}" />
+                    <DataGridTextColumn Header="Length"
+                             Binding="{Binding Duration, StringFormat={}{0:mm\\:ss}}" />
                 </DataGrid.Columns>
             </DataGrid>
 
