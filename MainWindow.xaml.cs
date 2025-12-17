@@ -91,12 +91,15 @@ public partial class MainWindow : Window
         }
     }
 
+    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
 
+    }
 }
 
 // InverseBoolConverter.cs
 
-    public class InverseBoolConverter : IValueConverter
+public class InverseBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             => value is bool b ? !b : value;

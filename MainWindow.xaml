@@ -13,16 +13,9 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
                 <!-- skapa playlist -->
                 <RowDefinition Height="Auto"/>
                 <!-- välj playlist -->
@@ -44,30 +37,32 @@
                  Margin="0,0,5,0"
                  Text="{Binding NewPlaylistName, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Button Content="Create Playlist"
-                Command="{Binding CreatePlaylistCommand}"
-                        />
+                <Button 
+                    Content="Create Playlist"
+                    Width="95"
+                    Margin="2.5 0 0 0"
+                    Command="{Binding CreatePlaylistCommand}"
+                />
             </StackPanel>
 
+            <Label 
+                Content="Playlists:" 
+                Grid.Row="1"
+                Grid.Column="0" Margin="0,5,0,0"/>
+
             <ComboBox 
-              Grid.Row="1"
+              Grid.Row="2"
               Grid.Column="0"
               ItemsSource="{Binding Playlists}"
               SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}"
               DisplayMemberPath="Name"
-              Margin="5"/>
+              Margin="5 0, 0, 5"/>
 
             <StackPanel Grid.Row="2" 
                     Orientation="Horizontal"
             Margin="5">
 
-                <TextBox Width="150"
-             Margin="0,0,5,0"
-             Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" />
-
-                <Button Content="Save Playlist Name"
-            Margin="5,0,0,0"
-            Command="{Binding UpdatePlaylistCommand}" />
+            
             </StackPanel>
 
 
@@ -106,6 +101,14 @@
 
                 <!-- DataGrid -->
             </Grid.RowDefinitions>
+            <Label Content="{Binding SelectedPlaylist, Mode=TwoWay}"></Label>
+            <Button Content="Save Playlist Name"
+                Margin="2.5,0,0,0"
+                HorizontalAlignment="Right"
+                Command="{Binding UpdatePlaylistCommand}" Width="95" 
+            />
+            <!--Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" />-->
+
 
             <DataGrid x:Name="myDataGrid" 
                   Grid.Row="1"
