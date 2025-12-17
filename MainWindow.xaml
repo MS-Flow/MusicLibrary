@@ -44,8 +44,9 @@
                  Margin="0,0,5,0"
                  Text="{Binding NewPlaylistName, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Button Content="Skapa playlist"
-                Command="{Binding CreatePlaylistCommand}" />
+                <Button Content="Create Playlist"
+                Command="{Binding CreatePlaylistCommand}"
+                        />
             </StackPanel>
 
             <ComboBox 
@@ -64,7 +65,7 @@
              Margin="0,0,5,0"
              Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Button Content="Spara namn"
+                <Button Content="Save Playlist Name"
             Margin="5,0,0,0"
             Command="{Binding UpdatePlaylistCommand}" />
             </StackPanel>
@@ -92,7 +93,7 @@
 
             <Button 
             Grid.Row="3"
-              Content="Lägg till i playlist"
+              Content="Add Track To Playlist"
               Margin="5"
               Command="{Binding AddTrackToPlaylistCommand}" />
 
