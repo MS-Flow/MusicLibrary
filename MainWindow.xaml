@@ -99,9 +99,7 @@
             <Grid.RowDefinitions>
                 <!-- loading text -->
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="500"/>
-
-                <!-- DataGrid -->
+                <RowDefinition Height="*"/> <!-- make the DataGrid row stretch -->
             </Grid.RowDefinitions>
 
             <TextBox
@@ -111,46 +109,46 @@
              Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged_1" />
 
             <Button Content="Save Playlist Name"
-                    
                     HorizontalAlignment="Right"
             Command="{Binding UpdatePlaylistCommand}" Height="30" VerticalAlignment="Top" />
 
-            <DataGrid x:Name="myDataGrid" 
-                  Grid.Row="1"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  CanUserResizeColumns="False"
-                  CanUserResizeRows="False"
-                  CanUserReorderColumns="False"
-                  CanUserSortColumns="True"
-                  SelectionMode="Extended"
-                  SelectionUnit="CellOrRowHeader"
-                  RowHeaderWidth="20"
-                  HorizontalScrollBarVisibility="Auto"
-                  VerticalScrollBarVisibility="Auto"
-                  AlternationCount="2"
-                  RowBackground="White"
-                  AlternatingRowBackground="NavajoWhite"
-                  ItemsSource="{Binding Tracks}"
-                  ScrollViewer.ScrollChanged="DataGrid_ScrollChanged"
-                  IsEnabled="{Binding IsLoading,
+            <DataGrid x:Name="myDataGrid"
+                      Grid.Row="1"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserResizeColumns="False"
+                      CanUserResizeRows="False"
+                      CanUserReorderColumns="False"
+                      CanUserSortColumns="True"
+                      SelectionMode="Extended"
+                      SelectionUnit="CellOrRowHeader"
+                      RowHeaderWidth="30"
+                      RowHeight="28"
+                      FontSize="14"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      AlternationCount="2"
+                      RowBackground="White"
+                      AlternatingRowBackground="NavajoWhite"
+                      ItemsSource="{Binding Tracks}"
+                      ScrollViewer.ScrollChanged="DataGrid_ScrollChanged"
+                      IsEnabled="{Binding IsLoading,
                               Converter={StaticResource InverseBoolConverter}}"
-                  SelectedItem="{Binding SelectedPlaylistTrack, Mode=TwoWay}"
-                      
-                      
-        >
+                      SelectedItem="{Binding SelectedPlaylistTrack, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                 <DataGrid.RowHeaderStyle>
                     <Style TargetType="DataGridRowHeader">
                         <Setter Property="Content" Value="🗑"/>
-                        <Setter Property="ToolTip" Value="Ta bort låt från playlist"/>
+                        <Setter Property="ToolTip" Value="Remove track from playlist"/>
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="Cursor" Value="Hand"/>
                         <Setter Property="Foreground" Value="DarkRed"/>
                         <Setter Property="Padding" Value="5"/>
                         <EventSetter Event="PreviewMouseLeftButtonDown"
-                     Handler="RowHeader_DeleteClicked"/>
+                                     Handler="RowHeader_DeleteClicked"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Foreground" Value="Red"/>
@@ -158,22 +156,16 @@
                         </Style.Triggers>
                     </Style>
                 </DataGrid.RowHeaderStyle>
-
-
-
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Track"
-                            Binding="{Binding Name}" FontStyle="Italic"/>
-
+                                        Binding="{Binding Name}"
+                                        FontStyle="Italic" />
                     <DataGridTextColumn Header="Album"
-                            Binding="{Binding Album.Title}" />
-
+                                        Binding="{Binding Album.Title}" />
                     <DataGridTextColumn Header="Length"
-                             Binding="{Binding Duration, StringFormat={}{0:mm\\:ss}}" />
+                                        Binding="{Binding Duration, StringFormat={}{0:mm\\:ss}}" />
                 </DataGrid.Columns>
             </DataGrid>
-
-
         </Grid>
     </Grid>
 </Window>
