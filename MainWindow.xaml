@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MusicLibrary"
         xmlns:model="clr-namespace:MusicLibrary.Models"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="Music Library" Height="450" Width="800"
         MinWidth="800" MinHeight="450">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -17,26 +17,17 @@
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <!-- skapa playlist -->
                 <RowDefinition Height="Auto"/>
-                <!-- välj playlist -->
                 <RowDefinition Height="Auto"/>
-                <!-- ändra namn -->
                 <RowDefinition Height="*"/>
-                <!-- TreeView -->
                 <RowDefinition Height="auto"/>
-                <!-- lägg till-knapp -->
             </Grid.RowDefinitions>
 
-            <StackPanel 
-            Grid.Row="0"
-            Orientation="Horizontal"
-            Margin="5"
-            Height="20">
-
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5" Height="20">
                 <TextBox Width="150"
-                 Margin="0,0,5,0"
-                 Text="{Binding NewPlaylistName, UpdateSourceTrigger=PropertyChanged}" />
+                    Margin="0,0, 5,0"
+                    Text="{Binding NewPlaylistName, UpdateSourceTrigger=PropertyChanged}" 
+                />
 
                 <Button 
                     Content="Create Playlist"
@@ -49,7 +40,8 @@
             <Label 
                 Content="Playlists:" 
                 Grid.Row="1"
-                Grid.Column="0" Margin="0,5,0,0"/>
+                Grid.Column="0" Margin="0,5,0,0"
+            />
 
             <ComboBox 
               Grid.Row="2"
@@ -57,17 +49,8 @@
               ItemsSource="{Binding Playlists}"
               SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}"
               DisplayMemberPath="Name"
-              Margin="5 0, 0, 5"/>
-
-            <StackPanel Grid.Row="2" 
-                    Orientation="Horizontal"
-            Margin="5">
-
-
-            </StackPanel>
-
-
-
+              Margin="5 0, 0, 5"
+            />
 
             <TreeView x:Name="myTreeView" Grid.Row="3" Grid.Column="0" SelectedItemChanged="TreeView_SelectedItemChanged">
                 <TreeView.Resources>
@@ -88,11 +71,12 @@
             </TreeView>
 
             <Button 
-            Grid.Row="4"
-              Content="Add Track To Playlist"
-              Margin="5"
+                Grid.Row="4"
+                Content="Add Track To Playlist"
+                Margin="5"
                 Height="20"
-              Command="{Binding AddTrackToPlaylistCommand}" />
+                Command="{Binding AddTrackToPlaylistCommand}" 
+            />
 
         </Grid>
         <Grid Grid.Column="1">
@@ -101,30 +85,15 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Grid Margin="0,0,0,0">
-                <!-- wrap textbox + buttons in a small grid/stackpanel -->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+            <TextBox
+                     Height="30"
+             Margin="0,0,103,0"
+                FontSize="15"
+             Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged_1" />
 
-                <TextBox
-            Grid.Column="0"
-            Height="30"
-            Margin="0,0,5,0"
-            FontSize="15"
-            Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}"
-            TextChanged="TextBox_TextChanged_1" />
-
-                <Button
-            Grid.Column="1"
-            Content="Save Playlist Name"
-            Margin="0,0,5,0"
-            Command="{Binding UpdatePlaylistCommand}"
-            Height="30"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top" />
+            <Button Content="Save Playlist Name"
+                    HorizontalAlignment="Right"
+            Command="{Binding UpdatePlaylistCommand}" Height="30" VerticalAlignment="Top" />
 
                 <Button
             Grid.Column="2"
@@ -154,7 +123,7 @@
                       ItemsSource="{Binding Tracks}"
                       ScrollViewer.ScrollChanged="DataGrid_ScrollChanged"
                       IsEnabled="{Binding IsLoading,
-                              Converter={StaticResource InverseBoolConverter}}"
+                      Converter={StaticResource InverseBoolConverter}}"
                       SelectedItem="{Binding SelectedPlaylistTrack, Mode=TwoWay}"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch">
@@ -166,8 +135,10 @@
                         <Setter Property="Cursor" Value="Hand"/>
                         <Setter Property="Foreground" Value="DarkRed"/>
                         <Setter Property="Padding" Value="5"/>
-                        <EventSetter Event="PreviewMouseLeftButtonDown"
-                                     Handler="RowHeader_DeleteClicked"/>
+                        <EventSetter 
+                            Event="PreviewMouseLeftButtonDown"
+                            Handler="RowHeader_DeleteClicked"
+                        />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Foreground" Value="Red"/>
@@ -176,13 +147,23 @@
                     </Style>
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Track"
-                                        Binding="{Binding Name}"
-                                        FontStyle="Italic" />
-                    <DataGridTextColumn Header="Album"
-                                        Binding="{Binding Album.Title}" />
-                    <DataGridTextColumn Header="Length"
-                                        Binding="{Binding Duration, StringFormat={}{0:mm\\:ss}}" />
+                    <DataGridTextColumn 
+                        Header="Track"
+                        Binding="{Binding Name}"
+                        FontStyle="Italic" 
+                    />
+                    <DataGridTextColumn 
+                        Header="Artist" 
+                        Binding="{Binding Composer}"
+                    />
+                    <DataGridTextColumn 
+                        Header="Album"                      
+                        Binding="{Binding Album.Title}" 
+                    />
+                    <DataGridTextColumn 
+                        Header="Length"
+                        Binding="{Binding Duration, StringFormat={}{0:mm\\:ss}}" 
+                    />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
