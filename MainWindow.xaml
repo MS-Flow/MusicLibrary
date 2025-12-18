@@ -97,21 +97,40 @@
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <!-- loading text -->
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/> <!-- make the DataGrid row stretch -->
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBox
-                     Height="30"
-             Margin="0,0,103,0"
-                FontSize="15"
-             Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged_1" />
+            <Grid Margin="0,0,0,0">
+                <!-- wrap textbox + buttons in a small grid/stackpanel -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <Button Content="Save Playlist Name"
-                    HorizontalAlignment="Right"
-            Command="{Binding UpdatePlaylistCommand}" Height="30" VerticalAlignment="Top" />
+                <TextBox
+            Grid.Column="0"
+            Height="30"
+            Margin="0,0,5,0"
+            FontSize="15"
+            Text="{Binding EditPlaylistName, UpdateSourceTrigger=PropertyChanged}"
+            TextChanged="TextBox_TextChanged_1" />
 
+                <Button
+            Grid.Column="1"
+            Content="Save Playlist Name"
+            Margin="0,0,5,0"
+            Command="{Binding UpdatePlaylistCommand}"
+            Height="30"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top" />
+
+                <Button
+            Grid.Column="2"
+            Content="Delete Playlist"
+            Command="{Binding DeletePlaylistCommand}"  />
+            </Grid>
             <DataGrid x:Name="myDataGrid"
                       Grid.Row="1"
                       AutoGenerateColumns="False"

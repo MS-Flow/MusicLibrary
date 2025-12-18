@@ -1,12 +1,13 @@
-﻿using MusicLibrary.Models;
+﻿using MusicLibrary.Commands;
+using MusicLibrary.Models;
+using MusicLibrary.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
-using MusicLibrary.Commands;
-using MusicLibrary.Services;
+using System.Windows.Input;
 namespace MusicLibrary.ViewModels;
 
 public class MusicViewModel : INotifyPropertyChanged
@@ -25,6 +26,8 @@ public class MusicViewModel : INotifyPropertyChanged
     public RelayCommand AddTrackToPlaylistCommand { get; }
     public RelayCommand UpdatePlaylistCommand { get; }
     public RelayCommand RemoveTrackFromPlaylistCommand { get; }
+    public ICommand DeletePlaylistCommand { get; }
+
 
 
 
@@ -51,6 +54,8 @@ public class MusicViewModel : INotifyPropertyChanged
             _ => RemoveTrackFromPlaylistAsync(),
             _ => SelectedPlaylist != null && SelectedPlaylistTrack != null
         );
+        DeletePlaylistCommand = new RelayCommand(_ => DeleteSelectedPlaylist(), _ => SelectedPlaylist != null);
+
     }
 
     private bool _isLoading;
@@ -79,6 +84,12 @@ public class MusicViewModel : INotifyPropertyChanged
         {
             _selectedPlaylist = value;
             OnPropertyChanged(nameof(SelectedPlaylist));
+
+            // notify commands that depend on SelectedPlaylist
+            AddTrackToPlaylistCommand?.RaiseCanExecuteChanged();
+            UpdatePlaylistCommand?.RaiseCanExecuteChanged();
+            RemoveTrackFromPlaylistCommand?.RaiseCanExecuteChanged();
+            (DeletePlaylistCommand as RelayCommand)?.RaiseCanExecuteChanged();
 
             if (_selectedPlaylist != null)
             {
@@ -252,5 +263,17 @@ public class MusicViewModel : INotifyPropertyChanged
 
         Tracks.Remove(SelectedPlaylistTrack);
         SelectedPlaylistTrack = null;
+    }
+    private void DeleteSelectedPlaylist()
+    {
+        if (SelectedPlaylist == null)
+        {
+            return;
+        }
+
+        Playlists.Remove(SelectedPlaylist);
+        SelectedPlaylist = null;
+        EditPlaylistName = string.Empty;
+        Tracks.Clear();
     }
 }
