@@ -21,7 +21,6 @@ namespace MusicLibrary;
 /// </summary>
 public partial class MainWindow : Window
 {
-
     private MusicViewModel _vm = new MusicViewModel();
 
     public MainWindow()
@@ -37,7 +36,11 @@ public partial class MainWindow : Window
     {
         await _vm.LoadDataAsync();
         LoadArtists();
+    }
 
+    public void ReloadArtists()
+    {
+        LoadArtists();
     }
 
     private void LoadArtists()
@@ -45,7 +48,6 @@ public partial class MainWindow : Window
         using var db = new MusicContext();
 
         var artists = db.Artists
-            .Where(artist => artist.Albums.Count > 2)
             .Include(artist => artist.Albums)
             .ThenInclude(album => album.Tracks)
             .ToList();
@@ -92,4 +94,16 @@ public partial class MainWindow : Window
     {
         
     }
+
+    private void OpenAddItemWindow_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new AddItemWindow
+        {
+            Owner = this
+        };
+
+        window.ShowDialog();
+    }
+
+
 }
