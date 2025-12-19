@@ -1,11 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 namespace MusicLibrary.Models;
 
 public partial class MusicContext : DbContext
 {
+    private static IConfiguration? _configuration;
+
+    static MusicContext()
+    {
+        // Build configuration once (including user secrets if available)
+        _configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: true)
+#if DEBUG
+            .AddUserSecrets<MusicContext>(optional: true)
+#endif
+            .AddEnvironmentVariables()
+            .Build();
+    }
     public MusicContext()
     {
     }
@@ -30,9 +43,19 @@ public partial class MusicContext : DbContext
     public virtual DbSet<Track> Tracks { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=everyloop;TrustServerCertificate=True;Integrated Security=True;MultipleActiveResultSets=True");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = _configuration?.GetConnectionString("MusicDb");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "Connection string 'MusicDb' not found. Configure it in user secrets or appsettings.json.");
+            }
 
+            optionsBuilder.UseSqlServer(connectionString);
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Finnish_Swedish_CI_AS");
