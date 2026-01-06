@@ -29,7 +29,6 @@ public partial class Track
     [NotMapped]
     public TimeSpan Duration => TimeSpan.FromMilliseconds(Milliseconds);
 
-
     public int? Bytes { get; set; }
 
     public double UnitPrice { get; set; }
@@ -45,4 +44,7 @@ public partial class Track
     [ForeignKey("MediaTypeId")]
     [InverseProperty("Tracks")]
     public virtual MediaType MediaType { get; set; } = null!;
+
+    [NotMapped]
+    public string ArtistName => Album?.Artist?.Name ?? string.Empty;
 }

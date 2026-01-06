@@ -53,7 +53,8 @@ public class MusicService
         return await db.PlaylistTracks
             .Where(pt => pt.PlaylistId == playlistId)
             .Include(pt => pt.Track)
-            .ThenInclude(t => t.Album)
+                .ThenInclude(t => t.Album)
+                    .ThenInclude(a => a.Artist)
             .Select(pt => pt.Track)
             .ToListAsync();
     }
@@ -130,6 +131,7 @@ public class MusicService
             .Where(pt => pt.PlaylistId == playlistId)
             .Include(pt => pt.Track)
                 .ThenInclude(t => t.Album)
+                    .ThenInclude(a => a.Artist)
             .Select(pt => pt.Track)
             .OrderBy(t => t.TrackId)
             .Skip(skip)

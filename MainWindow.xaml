@@ -174,14 +174,25 @@
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Track"
-                                Binding="{Binding Name}"
-                                FontStyle="Italic" />
+                        Binding="{Binding Name}"
+                        FontStyle="Italic"
+                        MinWidth="200" 
+                        Width="*" />
+
                     <DataGridTextColumn Header="Artist"
-                                Binding="{Binding Composer}" />
+                        Binding="{Binding ArtistName}"
+                        MinWidth="100"
+                        Width="SizeToCells" />
+
                     <DataGridTextColumn Header="Album"
-                                Binding="{Binding Album.Title}" />
+                        Binding="{Binding Album.Title}"
+                        MinWidth="50"
+                        Width="SizeToCells" />
+
                     <DataGridTextColumn Header="Length"
-                                Binding="{Binding Duration, StringFormat={}{0:mm\\:ss}}" />
+                        Binding="{Binding Duration, StringFormat={}{0:mm\\:ss}}"
+                        MinWidth="50" 
+                        Width="SizeToCells" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
