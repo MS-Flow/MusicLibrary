@@ -1,49 +1,43 @@
-﻿using MusicLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicLibrary.Models;
 
 namespace MusicLibrary.Services;
 
 public class MusicService
 {
-
     public async Task<List<Track>> GetTracksAsync()
     {
         using var db = new MusicContext();
         return await db.Tracks
-                       .Include(t => t.Album)
-                       .ThenInclude(a => a.Artist)
-                       .ToListAsync();
+            .Include(t => t.Album)
+            .ThenInclude(a => a.Artist)
+            .ToListAsync();
     }
-
 
     public async Task<List<Album>> GetAlbumsAsync()
     {
         using var db = new MusicContext();
         return await db.Albums
-                       .Include(a => a.Artist)
-                       .Include(a => a.Tracks)
-                       .ToListAsync();
+            .Include(a => a.Artist)
+            .Include(a => a.Tracks)
+            .ToListAsync();
     }
-
 
     public async Task<List<Artist>> GetArtistsAsync()
     {
         using var db = new MusicContext();
         return await db.Artists
-                       .Include(a => a.Albums)
-                           .ThenInclude(al => al.Tracks)
-                       .ToListAsync();
+            .Include(a => a.Albums)
+            .ThenInclude(al => al.Tracks)
+            .ToListAsync();
     }
 
     public async Task<List<Playlist>> GetPlaylistsAsync()
     {
         using var db = new MusicContext();
         return await db.Playlists
-                       .OrderBy(p => p.Name)
-                       .ToListAsync();
+            .OrderBy(p => p.Name)
+            .ToListAsync();
     }
 
     public async Task<List<Track>> GetTracksForPlaylistAsync(int playlistId)
@@ -105,7 +99,6 @@ public class MusicService
         );
     }
 
-
     public async Task UpdatePlaylistNameAsync(int playlistId, string newName)
     {
         using var db = new MusicContext();
@@ -120,10 +113,7 @@ public class MusicService
         await db.SaveChangesAsync();
     }
 
-    public async Task<List<Track>> GetTracksForPlaylistPagedAsync(
-        int playlistId,
-        int skip,
-        int take)
+    public async Task<List<Track>> GetTracksForPlaylistPagedAsync(int playlistId, int skip, int take)
     {
         using var db = new MusicContext();
 
@@ -138,5 +128,4 @@ public class MusicService
             .Take(take)
             .ToListAsync();
     }
-
 }

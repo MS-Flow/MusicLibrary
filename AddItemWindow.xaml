@@ -27,6 +27,7 @@
                 Margin="5, 0, 5, 5"
             />
             <Label 
+                x:Name="AlbumLabel"
                 Content="Album:"
             />
             <TextBox 
@@ -34,6 +35,7 @@
                 Margin="5, 0, 5, 5"
             />
             <Label 
+                x:Name="TrackLabel"
                 Content="Track name:"
             />
             <TextBox 
@@ -41,6 +43,7 @@
                 Margin="5, 0, 5, 5"
             />
             <Label 
+                x:Name="LengthLabel"
                 Content="Length:"
             />
             <TextBox 
@@ -49,8 +52,9 @@
             />
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal">
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button
+                x:Name="ConfirmButton"
                 Content="Add Item"
                 FontWeight="SemiBold"
                 Margin="5, 5"
@@ -64,7 +68,5 @@
                 Width="120"
                 Click="Cancel_Click" />
         </StackPanel>
-
-
     </Grid>
 </Window>

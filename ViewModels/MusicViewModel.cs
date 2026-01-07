@@ -1,13 +1,11 @@
 ﻿using MusicLibrary.Commands;
 using MusicLibrary.Models;
 using MusicLibrary.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 using System.Windows.Input;
+
 namespace MusicLibrary.ViewModels;
 
 public class MusicViewModel : INotifyPropertyChanged
@@ -22,14 +20,12 @@ public class MusicViewModel : INotifyPropertyChanged
     public ObservableCollection<Playlist> Playlists { get; } = new();
     public ObservableCollection<Track> Tracks { get; } = new();
     public ObservableCollection<Track> LibraryTracks { get; } = new();
+
     public RelayCommand CreatePlaylistCommand { get; }
     public RelayCommand AddTrackToPlaylistCommand { get; }
     public RelayCommand UpdatePlaylistCommand { get; }
     public RelayCommand RemoveTrackFromPlaylistCommand { get; }
     public ICommand DeletePlaylistCommand { get; }
-
-
-
 
     public MusicViewModel()
     {
@@ -54,8 +50,11 @@ public class MusicViewModel : INotifyPropertyChanged
             _ => RemoveTrackFromPlaylistAsync(),
             _ => SelectedPlaylist != null && SelectedPlaylistTrack != null
         );
-        DeletePlaylistCommand = new RelayCommand(_ => DeleteSelectedPlaylist(), _ => SelectedPlaylist != null);
 
+        DeletePlaylistCommand = new RelayCommand(
+            _ => DeleteSelectedPlaylist(),
+            _ => SelectedPlaylist != null
+        );
     }
 
     private bool _isLoading;
@@ -64,16 +63,16 @@ public class MusicViewModel : INotifyPropertyChanged
         get => _isLoading;
         set
         {
-            if (_isLoading != value)
-            {
-                _isLoading = value;
-                OnPropertyChanged(nameof(IsLoading));
-            }
+            if (_isLoading == value)
+                return;
+
+            _isLoading = value;
+            OnPropertyChanged(nameof(IsLoading));
         }
     }
 
     private const int PageSize = 15;
-    private int _currentOffset = 0;
+    private int _currentOffset;
     private bool _hasMoreTracks = true;
 
     private Playlist? _selectedPlaylist;
@@ -85,24 +84,22 @@ public class MusicViewModel : INotifyPropertyChanged
             _selectedPlaylist = value;
             OnPropertyChanged(nameof(SelectedPlaylist));
 
-            // notify commands that depend on SelectedPlaylist
-            AddTrackToPlaylistCommand?.RaiseCanExecuteChanged();
-            UpdatePlaylistCommand?.RaiseCanExecuteChanged();
-            RemoveTrackFromPlaylistCommand?.RaiseCanExecuteChanged();
+            AddTrackToPlaylistCommand.RaiseCanExecuteChanged();
+            UpdatePlaylistCommand.RaiseCanExecuteChanged();
+            RemoveTrackFromPlaylistCommand.RaiseCanExecuteChanged();
             (DeletePlaylistCommand as RelayCommand)?.RaiseCanExecuteChanged();
 
-            if (_selectedPlaylist != null)
-            {
-                EditPlaylistName = _selectedPlaylist.Name;
+            if (_selectedPlaylist == null)
+                return;
 
-                _currentOffset = 0;
-                _hasMoreTracks = true;
-                Tracks.Clear();
+            EditPlaylistName = _selectedPlaylist.Name;
 
-                _ = LoadMoreTracksAsync();
-            }
+            _currentOffset = 0;
+            _hasMoreTracks = true;
+            Tracks.Clear();
+
+            _ = LoadMoreTracksAsync();
         }
-
     }
 
     private string _newPlaylistName = string.Empty;
@@ -113,8 +110,7 @@ public class MusicViewModel : INotifyPropertyChanged
         {
             _newPlaylistName = value;
             OnPropertyChanged(nameof(NewPlaylistName));
-
-            CreatePlaylistCommand?.RaiseCanExecuteChanged();
+            CreatePlaylistCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -126,7 +122,7 @@ public class MusicViewModel : INotifyPropertyChanged
         {
             _editPlaylistName = value;
             OnPropertyChanged(nameof(EditPlaylistName));
-            UpdatePlaylistCommand?.RaiseCanExecuteChanged();
+            UpdatePlaylistCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -138,10 +134,21 @@ public class MusicViewModel : INotifyPropertyChanged
         {
             _selectedPlaylistTrack = value;
             OnPropertyChanged(nameof(SelectedPlaylistTrack));
-            RemoveTrackFromPlaylistCommand?.RaiseCanExecuteChanged();
+            RemoveTrackFromPlaylistCommand.RaiseCanExecuteChanged();
         }
     }
 
+    private Track? _selectedLibraryTrack;
+    public Track? SelectedLibraryTrack
+    {
+        get => _selectedLibraryTrack;
+        set
+        {
+            _selectedLibraryTrack = value;
+            OnPropertyChanged(nameof(SelectedLibraryTrack));
+            AddTrackToPlaylistCommand.RaiseCanExecuteChanged();
+        }
+    }
 
     public async Task LoadDataAsync()
     {
@@ -159,15 +166,11 @@ public class MusicViewModel : INotifyPropertyChanged
             LibraryTracks.Add(t);
     }
 
-
     private async Task LoadTracksForSelectedPlaylistAsync()
     {
         Tracks.Clear();
 
-        var tracks = await _service.GetTracksForPlaylistAsync(
-            _selectedPlaylist!.PlaylistId
-        );
-
+        var tracks = await _service.GetTracksForPlaylistAsync(_selectedPlaylist!.PlaylistId);
         Debug.WriteLine($"Tracks loaded: {tracks.Count}");
 
         foreach (var t in tracks)
@@ -182,20 +185,7 @@ public class MusicViewModel : INotifyPropertyChanged
 
         Playlists.Add(playlist);
         SelectedPlaylist = playlist;
-
         NewPlaylistName = string.Empty;
-    }
-
-    private Track? _selectedLibraryTrack;
-    public Track? SelectedLibraryTrack
-    {
-        get => _selectedLibraryTrack;
-        set
-        {
-            _selectedLibraryTrack = value;
-            OnPropertyChanged(nameof(SelectedLibraryTrack));
-            AddTrackToPlaylistCommand?.RaiseCanExecuteChanged();
-        }
     }
 
     private async void AddTrackToPlaylistAsync()
@@ -251,25 +241,20 @@ public class MusicViewModel : INotifyPropertyChanged
     {
         if (SelectedPlaylist == null || SelectedPlaylistTrack == null)
             return;
+
         await _service.RemoveTrackFromPlaylistAsync(
             SelectedPlaylist.PlaylistId,
             SelectedPlaylistTrack.TrackId
         );
 
-        await _service.RemoveTrackFromPlaylistAsync(
-         SelectedPlaylist.PlaylistId,
-         SelectedPlaylistTrack.TrackId
-     );
-
         Tracks.Remove(SelectedPlaylistTrack);
         SelectedPlaylistTrack = null;
     }
+
     private void DeleteSelectedPlaylist()
     {
         if (SelectedPlaylist == null)
-        {
             return;
-        }
 
         Playlists.Remove(SelectedPlaylist);
         SelectedPlaylist = null;

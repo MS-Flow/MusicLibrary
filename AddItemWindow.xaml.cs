@@ -2,18 +2,80 @@
 using System.Linq;
 using System.Windows;
 using MusicLibrary.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MusicLibrary
 {
     public partial class AddItemWindow : Window
     {
+        private readonly int? _editArtistId;
+
         public AddItemWindow()
         {
             InitializeComponent();
         }
 
+        public AddItemWindow(Artist artistToEdit) : this()
+        {
+            _editArtistId = artistToEdit?.ArtistId;
+
+            Title = "Edit Artist";
+            ConfirmButton.Content = "Save";
+
+            ArtistTextBox.Text = artistToEdit?.Name ?? string.Empty;
+
+            // Edit mode: only allow editing artist name
+            AlbumLabel.Visibility = Visibility.Collapsed;
+            AlbumTextBox.Visibility = Visibility.Collapsed;
+            TrackLabel.Visibility = Visibility.Collapsed;
+            TrackTextBox.Visibility = Visibility.Collapsed;
+            LengthLabel.Visibility = Visibility.Collapsed;
+            LengthTextBox.Visibility = Visibility.Collapsed;
+        }
+
         private async void AddItem_Click(object sender, RoutedEventArgs e)
         {
+            if (_editArtistId.HasValue)
+            {
+                var newName = ArtistTextBox.Text.Trim();
+                if (string.IsNullOrWhiteSpace(newName))
+                {
+                    MessageBox.Show("Artist name is required.", "Validation",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                try
+                {
+                    using var db = new MusicContext();
+
+                    var artist = await db.Artists.FirstOrDefaultAsync(a => a.ArtistId == _editArtistId.Value);
+                    if (artist == null)
+                    {
+                        MessageBox.Show("Artist not found.", "Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    artist.Name = newName;
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error while updating artist: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (Owner is MainWindow ownerMain)
+                {
+                    ownerMain.ReloadArtists();
+                }
+
+                DialogResult = true;
+                Close();
+                return;
+            }
 
             var artistName = ArtistTextBox.Text.Trim();
             var albumTitle = AlbumTextBox.Text.Trim();
@@ -90,9 +152,9 @@ namespace MusicLibrary
                 return;
             }
 
-            if (Owner is MainWindow main)
+            if (Owner is MainWindow ownerMain2)
             {
-                main.ReloadArtists();
+                ownerMain2.ReloadArtists();
             }
 
             DialogResult = true;
