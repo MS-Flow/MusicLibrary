@@ -14,10 +14,10 @@ git clone https://github.com/MS-Flow/MusicLibrary.git cd MusicLibrary
 
 ## 2) Återställ databasen från `.bak`
 
-Du ska även bifoga/ta emot en databasbackup (t.ex. `MusicDb.bak`). Den behöver återställas i din lokala SQL Server-instans.
+Du ska även bifoga/ta emot en databasbackup. Den behöver återställas i din lokala SQL Server-instans.
 
 1. Öppna SQL Server Management Studio
-2. Anslut till `(localdb)\MSSQLLocalDB` (eller din egen SQL Server-instans)
+2. Anslut tillmdin egen SQL Server-instans
 3. Högerklicka på **Databases** → **Restore Database...**
 4. Välj `.bak`-filen och kör restore
 
