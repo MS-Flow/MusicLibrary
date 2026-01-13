@@ -29,7 +29,7 @@ Applikationen letar efter en connection string med namnet `MusicDb`. Den kan lä
 - **User Secrets** (i Debug), eller
 - miljövariabler
 
-### Alternativ A: User Secrets (rekommenderas)
+### User Secrets
 
 I Visual Studio:
 
@@ -52,6 +52,8 @@ I Visual Studio:
 - `F4` Redigera vald artist (endast namn)
 - `F5` Ta bort vald artist (inkl. album/låtar)
 - `F6` Lägg till album/låt till vald artist
+- `F7` Redigera vald låt (namn och längd)
+
 - `F11` Fullskärm av/på
 - `F12` Avsluta
 
