@@ -35,7 +35,8 @@ I Visual Studio:
 
 1. Högerklicka projektet → **Manage User Secrets**
 2. Lägg in:
-{ "ConnectionStrings": { "MusicDb": "Server=(localdb)\MSSQLLocalDB;Database=MusicDb;Trusted_Connection=True;TrustServerCertificate=True" } }
+{ "ConnectionStrings": {
+"MusicDb": "Server=localhost,1433;Database=everyloop;TrustServerCertificate=True;Integrated security=True;MultipleActiveResultSets=True" } }
 
 ## 4) Starta applikationen
 
