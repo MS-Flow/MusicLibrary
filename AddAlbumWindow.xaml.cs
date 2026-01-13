@@ -88,7 +88,6 @@ public partial class AddAlbumWindow : Window
 
     private void Cancel_Click(object sender, RoutedEventArgs e)
     {
-        DialogResult = false;
         Close();
     }
 }

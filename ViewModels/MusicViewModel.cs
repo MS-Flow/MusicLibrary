@@ -52,7 +52,7 @@ public class MusicViewModel : INotifyPropertyChanged
         );
 
         DeletePlaylistCommand = new RelayCommand(
-            _ => DeleteSelectedPlaylist(),
+            _ => DeleteSelectedPlaylistAsync(),
             _ => SelectedPlaylist != null
         );
     }
@@ -251,10 +251,14 @@ public class MusicViewModel : INotifyPropertyChanged
         SelectedPlaylistTrack = null;
     }
 
-    private void DeleteSelectedPlaylist()
+    private async void DeleteSelectedPlaylistAsync()
     {
         if (SelectedPlaylist == null)
             return;
+
+        var playlistId = SelectedPlaylist.PlaylistId;
+
+        await _service.DeletePlaylistAsync(playlistId);
 
         Playlists.Remove(SelectedPlaylist);
         SelectedPlaylist = null;

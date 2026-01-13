@@ -4,6 +4,7 @@ using MusicLibrary.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -17,6 +18,7 @@ public partial class MainWindow : Window
     public static readonly RoutedUICommand EditArtistRoutedCommand = new("Edit Artist", nameof(EditArtistRoutedCommand), typeof(MainWindow));
     public static readonly RoutedUICommand RemoveArtistRoutedCommand = new("Remove Artist", nameof(RemoveArtistRoutedCommand), typeof(MainWindow));
     public static readonly RoutedUICommand AddAlbumRoutedCommand = new("Add Album", nameof(AddAlbumRoutedCommand), typeof(MainWindow));
+    public static readonly RoutedUICommand EditTrackRoutedCommand = new("Edit Track", nameof(EditTrackRoutedCommand), typeof(MainWindow));
     public static readonly RoutedUICommand ToggleFullscreenRoutedCommand = new("Toggle Fullscreen", nameof(ToggleFullscreenRoutedCommand), typeof(MainWindow));
     public static readonly RoutedUICommand ExitRoutedCommand = new("Exit", nameof(ExitRoutedCommand), typeof(MainWindow));
 
@@ -36,6 +38,7 @@ public partial class MainWindow : Window
         CommandBindings.Add(new CommandBinding(EditArtistRoutedCommand, EditArtist_Executed, EditArtist_CanExecute));
         CommandBindings.Add(new CommandBinding(RemoveArtistRoutedCommand, RemoveArtist_Executed, RemoveArtist_CanExecute));
         CommandBindings.Add(new CommandBinding(AddAlbumRoutedCommand, AddAlbum_Executed, AddAlbum_CanExecute));
+        CommandBindings.Add(new CommandBinding(EditTrackRoutedCommand, EditTrack_Executed, EditTrack_CanExecute));
         CommandBindings.Add(new CommandBinding(ToggleFullscreenRoutedCommand, (_, _) => ToggleFullscreen()));
         CommandBindings.Add(new CommandBinding(ExitRoutedCommand, (_, _) => Close()));
 
@@ -45,19 +48,19 @@ public partial class MainWindow : Window
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
         await _vm.LoadDataAsync();
-        LoadArtists();
+        await LoadArtistsAsync();
     }
 
-    public void ReloadArtists() => LoadArtists();
+    public void ReloadArtists() => _ = LoadArtistsAsync();
 
-    private void LoadArtists()
+    private async Task LoadArtistsAsync()
     {
-        using var db = new MusicContext();
+        await using var db = new MusicContext();
 
-        var artists = db.Artists
+        var artists = await db.Artists
             .Include(artist => artist.Albums)
             .ThenInclude(album => album.Tracks)
-            .ToList();
+            .ToListAsync();
 
         myTreeView.ItemsSource = new ObservableCollection<Artist>(artists);
     }
@@ -97,7 +100,7 @@ public partial class MainWindow : Window
 
     private void OpenAddItemWindow()
     {
-        new AddItemWindow { Owner = this }.ShowDialog();
+        new AddItemWindow { Owner = this }.Show();
     }
 
     private void ToggleFullscreen()
@@ -130,7 +133,7 @@ public partial class MainWindow : Window
         if (myTreeView.SelectedItem is not Artist artist)
             return;
 
-        new AddItemWindow(artist) { Owner = this }.ShowDialog();
+        new AddItemWindow(artist) { Owner = this }.Show();
     }
 
     private void RemoveArtist_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -189,7 +192,7 @@ public partial class MainWindow : Window
             await db.SaveChangesAsync();
             await tx.CommitAsync();
 
-            LoadArtists();
+            await LoadArtistsAsync();
         }
         catch (Exception ex)
         {
@@ -209,6 +212,17 @@ public partial class MainWindow : Window
         if (myTreeView.SelectedItem is not Artist artist)
             return;
 
-        new AddAlbumWindow(artist) { Owner = this }.ShowDialog();
+        new AddAlbumWindow(artist) { Owner = this }.Show();
+    }
+
+    private void EditTrack_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        => e.CanExecute = myTreeView?.SelectedItem is MusicLibrary.Models.Track;
+
+    private void EditTrack_Executed(object? sender, ExecutedRoutedEventArgs? e)
+    {
+        if (myTreeView.SelectedItem is not MusicLibrary.Models.Track track)
+            return;
+
+        new EditTrackWindow(track) { Owner = this }.Show();
     }
 }

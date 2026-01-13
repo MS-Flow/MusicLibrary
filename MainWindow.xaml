@@ -16,6 +16,7 @@
         <KeyBinding Key="F4" Command="{x:Static local:MainWindow.EditArtistRoutedCommand}" />
         <KeyBinding Key="F5" Command="{x:Static local:MainWindow.RemoveArtistRoutedCommand}" />
         <KeyBinding Key="F6" Command="{x:Static local:MainWindow.AddAlbumRoutedCommand}" />
+        <KeyBinding Key="F7" Command="{x:Static local:MainWindow.EditTrackRoutedCommand}" />
         <KeyBinding Key="F11" Command="{x:Static local:MainWindow.ToggleFullscreenRoutedCommand}" />
         <KeyBinding Key="F12" Command="{x:Static local:MainWindow.ExitRoutedCommand}" />
     </Window.InputBindings>
@@ -37,6 +38,7 @@
                 <MenuItem Header="Remove Artist" Command="{x:Static local:MainWindow.RemoveArtistRoutedCommand}" InputGestureText="F5" ToolTip="Remove the selected artist (including albums/tracks)." />
                 <Separator />
                 <MenuItem Header="Add Album" Command="{x:Static local:MainWindow.AddAlbumRoutedCommand}" InputGestureText="F6" ToolTip="Add albums and tracks to the selected artist." />
+                <MenuItem Header="Edit Track" Command="{x:Static local:MainWindow.EditTrackRoutedCommand}" InputGestureText="F7" ToolTip="Edit the selected track name and length." />
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="Fullscreen Mode" Command="{x:Static local:MainWindow.ToggleFullscreenRoutedCommand}" InputGestureText="F11" ToolTip="Toggle fullscreen mode." />

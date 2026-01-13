@@ -128,4 +128,23 @@ public class MusicService
             .Take(take)
             .ToListAsync();
     }
+
+    public async Task DeletePlaylistAsync(int playlistId)
+    {
+        using var db = new MusicContext();
+
+        // Remove join rows first
+        await db.PlaylistTracks
+            .Where(pt => pt.PlaylistId == playlistId)
+            .ExecuteDeleteAsync();
+
+        var playlist = await db.Playlists
+            .FirstOrDefaultAsync(p => p.PlaylistId == playlistId);
+
+        if (playlist == null)
+            return;
+
+        db.Playlists.Remove(playlist);
+        await db.SaveChangesAsync();
+    }
 }

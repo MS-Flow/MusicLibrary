@@ -47,7 +47,7 @@ namespace MusicLibrary
 
                 try
                 {
-                    using var db = new MusicContext();
+                    await using var db = new MusicContext();
 
                     var artist = await db.Artists.FirstOrDefaultAsync(a => a.ArtistId == _editArtistId.Value);
                     if (artist == null)
@@ -72,7 +72,6 @@ namespace MusicLibrary
                     ownerMain.ReloadArtists();
                 }
 
-                DialogResult = true;
                 Close();
                 return;
             }
@@ -103,13 +102,13 @@ namespace MusicLibrary
 
             try
             {
-                using var db = new MusicContext();
+                await using var db = new MusicContext();
 
-                var nextArtistId = (db.Artists.Any() ? db.Artists.Max(a => a.ArtistId) : 0) + 1;
-                var nextAlbumId = (db.Albums.Any() ? db.Albums.Max(a => a.AlbumId) : 0) + 1;
-                var nextTrackId = (db.Tracks.Any() ? db.Tracks.Max(t => t.TrackId) : 0) + 1;
+                var nextArtistId = (await db.Artists.AnyAsync() ? await db.Artists.MaxAsync(a => a.ArtistId) : 0) + 1;
+                var nextAlbumId = (await db.Albums.AnyAsync() ? await db.Albums.MaxAsync(a => a.AlbumId) : 0) + 1;
+                var nextTrackId = (await db.Tracks.AnyAsync() ? await db.Tracks.MaxAsync(t => t.TrackId) : 0) + 1;
 
-                var artist = db.Artists.FirstOrDefault(a => a.Name == artistName);
+                var artist = await db.Artists.FirstOrDefaultAsync(a => a.Name == artistName);
                 if (artist == null)
                 {
                     artist = new Artist
@@ -120,7 +119,7 @@ namespace MusicLibrary
                     db.Artists.Add(artist);
                 }
 
-                var album = db.Albums.FirstOrDefault(a => a.Title == albumTitle && a.ArtistId == artist.ArtistId);
+                var album = await db.Albums.FirstOrDefaultAsync(a => a.Title == albumTitle && a.ArtistId == artist.ArtistId);
                 if (album == null)
                 {
                     album = new Album
@@ -132,7 +131,7 @@ namespace MusicLibrary
                     db.Albums.Add(album);
                 }
 
-                var track = new Track
+                db.Tracks.Add(new Track
                 {
                     TrackId = nextTrackId,
                     Name = trackName,
@@ -140,9 +139,8 @@ namespace MusicLibrary
                     MediaTypeId = 1,
                     Milliseconds = milliseconds,
                     UnitPrice = 0.0
-                };
+                });
 
-                db.Tracks.Add(track);
                 await db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -157,13 +155,11 @@ namespace MusicLibrary
                 ownerMain2.ReloadArtists();
             }
 
-            DialogResult = true;
             Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             Close();
         }
     }
